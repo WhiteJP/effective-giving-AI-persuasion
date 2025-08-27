@@ -47,3 +47,10 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+## data and output directories
+data/
+output/
+
+##.history from cursor too
+.history/
