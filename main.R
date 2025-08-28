@@ -3,7 +3,7 @@
 # =============================================================================
 
 # Load all required packages first
-source("libraries.R")
+source("scripts/libraries.R")
 
 # Set WD
 loc <- here::here()

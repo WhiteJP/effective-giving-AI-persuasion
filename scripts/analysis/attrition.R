@@ -1,10 +1,12 @@
-d_all <- readr::read_csv("data/data_ai-eg-persuasion.csv") |> 
-  mutate(
-    condition = factor(
-      condition, 
-      levels = c('control', "static_treatment", "conv_treatment")
-    )
-  )
+d_all <- read_rds("data/d_all.rds")
+
+# d_all <- readr::read_csv("data/data_ai-eg-persuasion.csv") |> 
+#   mutate(
+#     condition = factor(
+#       condition, 
+#       levels = c('control', "static_treatment", "conv_treatment")
+#     )
+#   )
 
 conv_errors <- c("R_7M4lCO8AvzFNtA2", "R_1DPc7kbjHlQHOVS", "R_5173KJIiwXvV5oJ")
 d_treated <- d_all |> filter(!is.na(condition))

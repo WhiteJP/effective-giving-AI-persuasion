@@ -156,11 +156,9 @@ df_plot <- loc_het$comparisons %>%
 manual_p <- loc_cate_comparisons %>%
   tidyr::extract(
     term,
-    into = c("contrast1","group1","contrast2","group2"),
-    regex = "^\\(([^,]+), ([^)]+)\\) - \\(([^,]+), ([^)]+)\\)$"
+    into = c("group1", "group2"),
+    regex = "^(.*)\\s-\\s(.*)$"
   ) %>%
-  filter(contrast1 == contrast2) %>%
-  rename(contrast = contrast1) %>%
   mutate(
     p_str  = as.character(p.value),
     p_num  = readr::parse_number(p_str),
@@ -178,7 +176,8 @@ manual_p <- loc_cate_comparisons %>%
       p_num < 0.05         ~ "circle",
       p_num < 0.10         ~ "diamond",
       TRUE             ~ NA_character_
-    )
+    ),
+    contrast = "mean(conv_treatment) - mean(control)"
   ) %>%
   filter(!is.na(signif)) %>%
   mutate(

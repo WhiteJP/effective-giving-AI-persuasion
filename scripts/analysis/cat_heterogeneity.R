@@ -12,7 +12,7 @@ d <- d %>%
 char_het <- het_by_cat("charity_fct", d, control_var = "cents_to_amf_pre_cat")
 char_het
 
-# look at comparisons between everyhing here
+# look at comparisons between everything here
 char_cate_comparisons <- marginaleffects::avg_comparisons(
   char_het$lm_mod,
   variables = list("condition" = "minmax"), # just conv v control
@@ -37,14 +37,19 @@ loc_het
 
 loc_cate_comparisons <- marginaleffects::avg_comparisons(
   loc_het$lm_mod,
-  variables = "condition",#list("condition" = "minmax"), # just conv v control
+  variables = list("condition" = "minmax"), # just conv v control
   newdata = "balanced",
   by = c("location_cat3"),
   hypothesis = "pairwise",
   p_adjust = "holm"
 ) 
 
+loc_cate_comparisons |> 
+  arrange(desc(abs(estimate))) |> 
+  as_tibble() |> 
+  filter(p.value < .05) |> 
+  print(n = Inf)
 
 ## NOW for binned variables, cause area (subj) and population served (pop)
 subj1_cond <- het_by_bins_cond("subj", d_subj1) #Level 1 of PCS
-pop2_cond <- het_by_bins_cond("pop", d_pop2) #Lvl 2 fo PCS
+pop2_cond <- het_by_bins_cond("pop", d_pop2) #Lvl 2 of PCS

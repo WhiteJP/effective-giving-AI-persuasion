@@ -1,6 +1,4 @@
 ## binned categorical variable plots
-
-
 subj1_cond$mod |> 
   broom::tidy() |> 
   dplyr::filter(grepl("^conditionconv_treatment:subj", term)) |> 
