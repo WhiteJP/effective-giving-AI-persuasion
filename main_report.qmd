@@ -90,7 +90,7 @@ The study investigates whether AI-powered conversations can be more persuasive t
 #| label: data_setup
 
 # Download and prepare data
-source("download_data.R")
+source("scripts/download_data.R")
 #download_osf_data_dir("6ya5n")
 ```
 

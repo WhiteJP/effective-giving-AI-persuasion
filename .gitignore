@@ -54,3 +54,5 @@ output/
 
 ##.history from cursor too
 .history/
+
+/.quarto/
