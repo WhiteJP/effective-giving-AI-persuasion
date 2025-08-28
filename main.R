@@ -9,13 +9,14 @@ source("libraries.R")
 loc <- here::here()
 setwd(loc)
 
-source("download_data.R")
+# get data 
+source("scripts/download_data.R")
 download_osf_data_dir("6ya5n")
 fs::dir_create("output", "figures") 
 
-# get config and function
-source("config.R")
-source("functions.R")
+# Configure, and define functions for analysis
+source("scripts/config.R")
+source("scripts/functions.R")
 
 # Analysis
 source("scripts/analysis/attrition.R")
@@ -30,7 +31,7 @@ source("scripts/analysis/persuasive_strategies.R")
 source("scripts/analysis/ai_accuracy.R")
 
 # Figures
-source("scripts/figures/charity_descriptive_plot_noadults.R") # Fig 2
+source("scripts/figures/charity_descriptive_plot.R") # Fig 2
 source("scripts/figures/motivation_plots.R") # Fig S1
 source("scripts/figures/main_plot.R") # Fig 3
 source("scripts/figures/cat_het_plot_cates.R") # Fig 4

@@ -135,7 +135,3 @@ library(qvalue)         # Q-value estimation
 # Check if all packages loaded successfully
 cat("All packages loaded successfully!\n")
 
-# Optional: Print session info for reproducibility
-cat("\nSession info for reproducibility:\n")
-cat("==================================\n")
-print(sessionInfo())

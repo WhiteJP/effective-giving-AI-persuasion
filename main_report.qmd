@@ -1,0 +1,291 @@
+---
+title: "Effective Giving AI Persuasion Project - Complete Analysis Report"
+author: "Josh White"
+date: 27 August 2025
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    df_print: paged
+    code-fold: true
+    code-tools: true
+    code-link: true
+    self-contained: true
+    theme: flatly
+    linestretch: 1
+    fig-width: 7.085
+    fig-height: 5
+    fig-dpi: 300
+    fig-cap: true
+  pdf:
+    toc: true
+    number-sections: true
+    df_printe: kable
+    fig-align: center
+    fig-width: 7.085
+    fig-height: 5
+    fig-cap: true
+    fontsize: 9pt
+    monofont: 'Source Code Pro'
+    monofontoptions: 
+    - Scale=0.666
+#. Following allows for code and output to be wrapped .#
+    include-in-header: 
+       text: |
+         \usepackage{fvextra}
+         \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
+include-before-body:
+  text: |
+    \RecustomVerbatimEnvironment{verbatim}{Verbatim}{
+      showspaces = false,
+      showtabs = false,
+      breaksymbolleft={},
+      breaklines
+      % Note: setting commandchars=\\\{\} here will cause an error 
+    }
+execute:
+  echo: true
+  warning: false
+  message: false
+params:
+  include_code: true
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+# Load all required packages and setup
+source("scripts/libraries.R")
+
+# Load configuration and functions
+source("scripts/config.R")
+source("scripts/functions.R")
+
+# Create output directories if they don't exist
+fs::dir_create("output", "figures")
+
+# Override echo setting based on parameter
+knitr::opts_chunk$set(echo = params$include_code)
+```
+
+# Introduction
+
+This report presents the complete analysis for the Effective Giving AI Persuasion Project. The analysis examines the effectiveness of AI-powered persuasive conversations compared to static messages and control conditions in promoting charitable giving to effective charities.
+
+## Project Overview
+
+The study investigates whether AI-powered conversations can be more persuasive than static messages in encouraging donations to effective charities like the Against Malaria Foundation (AMF). The analysis includes:
+
+- Sample descriptives and attrition analysis
+- Average Treatment Effects (ATEs)
+- Heterogeneity analysis using causal forests
+- Persuasive strategy analysis
+- AI accuracy assessment
+- Comprehensive visualizations
+
+# Data and Setup
+
+```{r}
+#| label: data_setup
+
+# Download and prepare data
+source("download_data.R")
+#download_osf_data_dir("6ya5n")
+```
+
+# Sample Descriptives and Attrition Analysis
+
+## Attrition Analysis
+
+```{r}
+#| file: scripts/analysis/attrition.R
+#| label: attrition
+```
+
+## Sample Characteristics
+
+```{r}
+#| file: scripts/analysis/sample_descriptives.R
+#| label: sample_descriptives
+```
+
+
+# Charity Descriptives
+
+```{r}
+#| file: scripts/analysis/charity_descriptives.R
+#| label: charity_descriptives
+```
+
+# Motivation Analysis
+
+```{r}
+#| file: scripts/analysis/motivation_analysis.R
+#| label: motivation_analysis
+```
+
+# Average Treatment Effects (ATEs)
+
+```{r}
+#| file: scripts/analysis/ates.R
+#| label: ates
+```
+
+# Categorical Heterogeneity Analysis
+
+```{r}
+#| file: scripts/analysis/cat_heterogeneity.R
+#| label: cat_heterogeneity
+```
+
+# Causal Forest Analysis
+
+```{r}
+#| file: scripts/analysis/causal_forest.R
+#| label: causal_forest
+```
+
+# Generalized Additive Models (GAMs)
+
+```{r}
+#| file: scripts/analysis/gams.R
+#| label: gams
+```
+
+# Persuasive Strategies Analysis
+
+```{r}
+#| file: scripts/analysis/persuasive_strategies.R
+#| label: persuasive_strategies
+```
+
+# AI Accuracy Assessment
+
+```{r}
+#| file: scripts/analysis/ai_accuracy.R
+#| label: ai_accuracy
+```
+
+# Figures
+
+## Charity Descriptive Plot
+
+```{r}
+#| file: scripts/figures/charity_descriptive_plot.R
+#| label: charity_plot
+#| fig-cap: "Figure 2: Charity descriptive statistics"
+```
+
+## Motivation Plots
+
+```{r}
+#| file: scripts/figures/motivation_plots.R
+#| label: motivation_plots
+#| fig-cap: "Figure S1: Motivation analysis plots"
+```
+
+## Main Treatment Effects Plot
+
+```{r}
+#| file: scripts/figures/main_plot.R
+#| label: main_plot
+#| fig-cap: "Figure 3: Main treatment effects"
+```
+
+## Categorical Heterogeneity Plot
+
+```{r}
+#| file: scripts/figures/cat_het_plot_cates.R
+#| label: cat_het_plot
+#| fig-cap: "Figure 4: Categorical heterogeneity in treatment effects"
+```
+
+## Binned Heterogeneity Plot
+
+```{r}
+#| file: scripts/figures/binned_het_cates.R
+#| label: binned_het_plot
+#| fig-cap: "Figure S2: Binned heterogeneity analysis"
+```
+
+## VIP and GAM Plot
+
+```{r}
+#| file: scripts/figures/vip_and_gam_plot.R
+#| label: vip_gam_plot
+#| fig-cap: "Figure 5: Variable importance and GAM analysis"
+```
+
+## Causal Forest Plots
+
+```{r}
+#| file: scripts/figures/causal_forest_plots.R
+#| label: causal_forest_plots
+#| fig-cap: "Figures S3 and S4: Causal forest analysis"
+```
+
+## Strategy Plot
+
+```{r}
+#| file: scripts/figures/strategy_plot.R
+#| label: strategy_plot
+#| fig-cap: "Figure 6: Persuasive strategies analysis"
+```
+
+## Accuracy Figure
+
+```{r}
+#| file: scripts/figures/accuracy_figure.R
+#| label: accuracy_figure
+#| fig-cap: "Figure S5: AI accuracy assessment"
+```
+
+# Tables
+
+## GAM Tables
+
+```{r}
+#| file: scripts/tables/gam_tables.R
+#| label: gam_tables
+```
+
+## Strategy Regression Table
+
+```{r}
+#| file: scripts/tables/strategy_regression_table.R
+#| label: strategy_table
+```
+
+# Session Information
+
+```{r}
+#| label: session_info
+#| echo: true
+
+sessionInfo()
+```
+
+# Appendix
+
+## Additional Notes
+
+- All figures are saved in the `output/figures/` directory
+- Raw data and processed datasets are available in the `data/` directory
+- Python scripts for NLP processing are located in `scripts/nlp/`
+- This report can be generated with or without code chunks using the `include_code` parameter
+
+## Reproducibility
+
+To reproduce this analysis:
+
+1. Ensure all required R packages are installed (see `libraries.R`)
+2. Install Quarto if not already installed: `install.packages("quarto")` then `quarto::quarto_install()`
+3. Download the data using the provided OSF repository
+4. Run this Quarto file with `quarto render main_report.qmd`
+
+The analysis can be customized by modifying the YAML parameters at the top of this document.
+
+## Alternative: R Markdown Version
+
+For users who prefer R Markdown or don't have Quarto installed, a compatible version of this report is available as `main_report.Rmd` which uses child chunks for script execution.

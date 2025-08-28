@@ -12,7 +12,7 @@ d_strategy_long <- d_strategy |>
     values_to = "rating"
   ) |> 
   mutate(
-    rating = recode(
+    rating = dplyr::recode(
       rating,
       "None" = 0,
       "Low" = 1,

@@ -169,4 +169,3 @@ pdp <- function(forest, X, cov_name, label = cov_name,
   
   return(list(fig = p, pd_data = plot_data))
 }
-

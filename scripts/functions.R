@@ -1,4 +1,17 @@
-## write function to do heterogeneity by categorical variable, 
+# =============================================================================
+# FUNCTIONS FOR EFFECTIVE GIVING AI PERSUASION PROJECT
+# =============================================================================
+# This file contains all custom functions used throughout the analysis.
+# Functions are organized by purpose and functionality.
+# =============================================================================
+
+# =============================================================================
+# HETEROGENEITY ANALYSIS FUNCTIONS
+# =============================================================================
+
+## Heterogeneity analysis by categorical variable
+## Runs regression with treatment-categorical variable interactions and returns
+## omnibus tests, marginal effects, and comparison plots
 het_by_cat <- function(cat_var, d, out_var = "cents_to_amf_change", control_var = "cents_to_amf_pre_cat") {
   # run lm 
   mod <- estimatr::lm_robust(
@@ -46,6 +59,9 @@ het_by_cat <- function(cat_var, d, out_var = "cents_to_amf_change", control_var 
     marg_plot = marg_plot)
 }
 
+## Heterogeneity analysis by binned categorical variables
+## Handles multiple binary variables (that together form some sort of non-mutually exlusive categorization) 
+## with minimum sample size requirements
 het_by_bins_cond <- function(prefix, d, out_var = "cents_to_amf_change", control_var = "cents_to_amf_pre_cat", min_n = 10) {
   obj <- run_bin_het_mod(prefix, d, out_var, control_var, min_n)
   counts <- obj$counts
@@ -175,7 +191,7 @@ het_by_bins_cond <- function(prefix, d, out_var = "cents_to_amf_change", control
   
 }
 
-
+## Helper function to create balanced newdata for binary heterogeneity analysis
 get_bin_newdata <- function(var, vars, d, control_var = "cents_to_amf_pre_cat") {
   other_vars <- setdiff(vars, var)
   new_data <- expand_grid(
@@ -195,6 +211,7 @@ get_bin_newdata <- function(var, vars, d, control_var = "cents_to_amf_pre_cat") 
     )
 }
 
+## Helper function to create newdata for profile treatment effects
 get_bin_newdata_profile_te <- function(var, vars, d, control_var = "cents_to_amf_pre_cat") {
   other_vars <- setdiff(vars, var)
   new_data <- expand_grid(
@@ -214,7 +231,7 @@ get_bin_newdata_profile_te <- function(var, vars, d, control_var = "cents_to_amf
     )
 }
 
-
+## Run binary heterogeneity model with minimum sample size filtering
 run_bin_het_mod <- function(prefix, d, out_var = "cents_to_amf_change", control_var = "cents_to_amf_pre_cat", min_n = 10) {
   # get counts for each each variable with prefix
   counts <- d |> 
@@ -249,8 +266,7 @@ run_bin_het_mod <- function(prefix, d, out_var = "cents_to_amf_change", control_
   list(counts = counts, mod  = mod, newd = d, het_vars = het_vars)
 }
 
-## Run ombinus tests
-
+## Run omnibus F-tests for interaction terms
 run_ombinus_tests <- function(mod, cat_var) {
   # 1. pull out all the interaction names
   all_int   <- grep(
@@ -277,9 +293,12 @@ run_ombinus_tests <- function(mod, cat_var) {
   )
 }
 
-## FOR AGREEMENT 
-# Function for agreement analysis -----------------------------------------
+# =============================================================================
+# AGREEMENT ANALYSIS FUNCTIONS
+# =============================================================================
 
+## Agreement analysis by group variable
+## Computes ICC and Cronbach's alpha for each group level
 agreement_analysis_by_group <- function(d, group_var) {
   group_sym <- rlang::sym(group_var)
   
@@ -341,6 +360,8 @@ agreement_analysis_by_group <- function(d, group_var) {
   )
 }
 
+## Simple agreement analysis for a data frame
+## Computes ICC and Cronbach's alpha across all items
 agreement_analysis <- function(d) {
   # d: a data.frame or matrix of numeric items (columns = items, rows = cases)
   
@@ -364,10 +385,12 @@ agreement_analysis <- function(d) {
   ))
 }
 
-### stuff for pcs etc
-  
-# Helpers -----------------------------------------------------------------
-# 
+# =============================================================================
+# PCS (PHILANTHROPIC CLASSIFICATION SYSTEM) FUNCTIONS
+# =============================================================================
+
+## Find missing values with fuzzy matching
+## Uses Levenshtein distance to find closest matches for missing values
 find_missing_with_match <- function(vec, df) {
   # flatten df to unique character values
   df_vals <- unique(na.omit(as.character(unlist(df))))
@@ -396,6 +419,8 @@ find_missing_with_match <- function(vec, df) {
   do.call(rbind, res)
 }
 
+## Replace terms using a named vector of replacements
+## Handles semicolon-separated values and deduplicates results
 replace_terms_named <- function(vec, replacements) {
   sapply(vec, function(entry) {
     if (is.na(entry)) return(NA_character_)
@@ -416,7 +441,8 @@ replace_terms_named <- function(vec, replacements) {
   }, USE.NAMES = FALSE)
 }
 
-
+## Extract unique PCS labels from a vector
+## Handles semicolon-separated values and sorts results
 extract_unique_pcs_labels <- function(vec) {
   vec |>
     replace_na("Unknown or not classified") |>  # Treat NA as a label
@@ -426,7 +452,8 @@ extract_unique_pcs_labels <- function(vec) {
     sort()
 }
 
-# Make charcter vector with multiple entries per row (separated by ;) into a one-hot-encoded matrix
+## Convert character vector to one-hot-encoded matrix
+## Creates binary variables for each unique PCS label
 make_pcs_matrix <- function(vec, prefix = "pcs") {
   # 1. Extract all unique labels including "NA"
   unique_labels <- extract_unique_pcs_labels(vec)
@@ -458,6 +485,8 @@ make_pcs_matrix <- function(vec, prefix = "pcs") {
     select(-row_id)
 }
 
+## Set unknown category for rows with missing PCS data
+## Creates an "unknown" column and sets other columns to 0 for missing rows
 set_unknown_on_na <- function(data, prefix, unknown_col) {
   # 1. Identify all subj_ columns (after possibly adding unknown_col)
   if (!unknown_col %in% names(data)) {
@@ -480,8 +509,8 @@ set_unknown_on_na <- function(data, prefix, unknown_col) {
     select(-.row_na_flag)
 }
 
-# Function to reduce the PCS matrix to only the columns that have at least min_n responses
-
+## Reduce PCS matrix to columns with sufficient sample size
+## Filters out sparse categories and creates "other" category if needed
 reduce_pcs_matrix <- function(d, prefix, min_n = 5) {
   # 1. Count occurrences of each variable
   counts <- d |> 
@@ -509,17 +538,16 @@ reduce_pcs_matrix <- function(d, prefix, min_n = 5) {
   d |> select(-all_of(sparse_vars))
 }
 
+## Format EIN numbers with dash separator
 format_ein <- function(eins) {
   sub("^(\\d{2})(\\d{7})$", "\\1-\\2", eins)
 }
 
+# =============================================================================
+# HIERARCHY PARSING FUNCTIONS
+# =============================================================================
 
-## parse hierarchy
-## 
-# Get subject hierarchy
-
-# Functions to deal with hierarchy and collapse ---------------------------
-
+## Parse HTML hierarchy file into nested list structure
 parse_hierarchy <- function(html_file_path, leaves_as_vec = FALSE) {
   html <- read_html(html_file_path)
   
@@ -557,6 +585,7 @@ parse_hierarchy <- function(html_file_path, leaves_as_vec = FALSE) {
   rec_parse_hierarchy(top_ul)
 }
 
+## Convert hierarchy list to data frame with level columns
 hierarchy_to_df <- function(hierarchy) {
   collect_paths <- function(node, path = character(), acc = list()) {
     if (is.character(node)) {
@@ -604,10 +633,7 @@ hierarchy_to_df <- function(hierarchy) {
   df
 }
 
-# figure out what this does with something that is already at level 1, when k = 2
-# if there is another more specific version in the same string it should leave,
-# if there isn't it should stay
-# #also what if soemthing isn't at any level -- at the moment it is just staying. 
+## Replace labels with their level-k equivalents in hierarchy
 replace_with_level <- function(vec, hierarchy_df, k = 1, na_replacement = "Unknown or not classified") {
   lvl_cols <- grep("^lvl_", names(hierarchy_df), value = TRUE)
   lvl_col  <- paste0("lvl_", k)
@@ -646,7 +672,12 @@ replace_with_level <- function(vec, hierarchy_df, k = 1, na_replacement = "Unkno
   })
 }
 
-## just gam between moderator and final score, or change?
+# =============================================================================
+# GAM (GENERALIZED ADDITIVE MODEL) FUNCTIONS
+# =============================================================================
+
+## Run simple GAM between moderator and outcome variable
+## Creates smooth plots with confidence intervals and optional histogram
 run_gam_simple <- function(
     d, cov, dv = "cents_to_amf_change",
     include_data = TRUE, add_hist = TRUE, x_label = cov, y_label = "Donation change",
@@ -814,11 +845,12 @@ run_gam_simple <- function(
   )
 }
 
+# =============================================================================
+# STATISTICAL HELPER FUNCTIONS
+# =============================================================================
 
-# Helper ------------------------------------------------------------------
-
-#get qvals for family of hypothesis tests in the one regression,
-#get qvals for the pFDR from that, replace those and return the whole vec
+## Get q-values for family of hypothesis tests
+## Replaces p-values with q-values for specified terms
 get_qvals <- function(mod, terms_to_q_swap) {
   requireNamespace('qvalue')
   nms <- terms_to_q_swap
@@ -828,9 +860,12 @@ get_qvals <- function(mod, terms_to_q_swap) {
   ps
 }
 
-## pds and uaps
-  
-# unadjusted heterogeneity plots
+# =============================================================================
+# CAUSAL FOREST PLOTTING FUNCTIONS
+# =============================================================================
+
+## Plot unadjusted heterogeneity for a single variable
+## Creates GAM smooth plots of individual treatment effects
 plot_uhp <- function(ites_conv, ites_static, d, var, label) {
   #get k for number of bases for GAM
   default_k <- 10
@@ -881,58 +916,8 @@ plot_uhp <- function(ites_conv, ites_static, d, var, label) {
     )
 }
 
-# unadjusted heterogeneity plots
-plot_uhp <- function(ites_conv, ites_static, d, var, label) {
-  #get k for number of bases for GAM
-  default_k <- 10
-  # default unless less unique vals, then uniq vals - 1
-  k_val    <- min(default_k, n_distinct(d[[var]]) - 1) 
-  
-  d %>% 
-    mutate(
-      ite_conv = ites_conv,
-      ite_static = ites_static
-    ) |> 
-    pivot_longer(
-      cols = starts_with("ite_"),
-      names_to = "comparison",
-      values_to = "ite"
-    ) |>
-    ggplot(aes(y = ite, x = !!sym(var), fill = comparison, col = comparison)) +
-    geom_point(alpha = 0.025) +
-    geom_smooth(
-      method  = "gam",
-      formula = y ~ s(x, bs = "tp", k = k_val)
-    ) +
-    geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
-    labs(
-      x = label,
-      y = "Causal-forest estimated Individual Treatment Effect"
-    ) +
-    scale_color_manual(
-      values = c("ite_conv" = "#5CB85CFF", "ite_static" = "#EEA236FF"),
-      name = "Treatment Effect",
-      labels = c(
-        "ite_conv" = "LLM Conversation - Control",
-        "ite_static" ="Static Message - Control"
-      )
-    ) +
-    scale_fill_manual(
-      values = c("ite_conv" = "#5CB85CFF", "ite_static" = "#EEA236FF"),
-      name = "Treatment Effect",
-      labels = c(
-        "ite_conv" = "LLM Conversation - Control",
-        "ite_static" = "Static Message - Control"
-      )
-    ) +
-    theme(
-      axis.title.x = element_text(size = 8),
-      legend.position = "bottom",
-      axis.text.x = element_text(size = 6),
-    )
-}
-
-
+## Plot all unadjusted heterogeneity plots
+## Creates a grid of UHP plots for multiple variables
 plot_all_uhps <- function(ites_conv, ites_static, d, vars, labels) {
   uhps <- map(seq_along(vars), ~ plot_uhp(ites_conv, ites_static, d, vars[.x], labels[.x]))
   patchwork::wrap_plots(uhps, guides = 'collect', ncol = 5)  +
@@ -940,8 +925,11 @@ plot_all_uhps <- function(ites_conv, ites_static, d, vars, labels) {
     theme(legend.position = "bottom")
 }
 
+## Wrapper function for partial dependence plots
 plot_pdp <- function(...) pdp(...)$fig
 
+## Plot all partial dependence plots
+## Creates a grid of PDP plots for multiple variables
 plot_all_pdps <- function(forest, X, vars, labels, n = 250, midpoint_func = median,
                           method = "centered", se_type = "sample",
                           include_hline0 = TRUE) {
@@ -965,15 +953,12 @@ plot_all_pdps <- function(forest, X, vars, labels, n = 250, midpoint_func = medi
     )
 }
 
+# =============================================================================
+# PARTIAL DEPENDENCE PLOT FUNCTIONS
+# =============================================================================
 
-
-
-
-
-
-# PDPs from causal forest ------------------------------------------------
-# can take either a binary or multi armed forest
-
+## Create partial dependence plots from causal forest
+## Supports both binary and multi-armed forests
 pdp <- function(forest, X, cov_name, label = cov_name, 
                 n = 250, midpoint_func = median,
                 method = c("centered", "average"),
@@ -1137,6 +1122,3 @@ pdp <- function(forest, X, cov_name, label = cov_name,
   
   return(list(fig = p, pd_data = plot_data))
 }
-
-
-

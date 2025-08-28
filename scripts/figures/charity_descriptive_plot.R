@@ -20,7 +20,7 @@ top_df <- overall_counts %>%
   slice_head(n = 10) %>%                      # top 10 by n
   mutate(
     prop  = n / total_mentions,               # proportion of all mentions
-    short = recode(charity_name_final, !!!short_names)
+    short = dplyr::recode(charity_name_final, !!!short_names)
   )
 
 charity_tab <-
