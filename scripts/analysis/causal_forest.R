@@ -48,6 +48,7 @@ names(labels_map) <- covars_vec
 
 
 # Run multi-arm causal forest
+set.seed(2882025) #results basically the same for all seed, but fix one for reproducibility
 ma_cf <- grf::multi_arm_causal_forest(
   X = as.matrix(d[, covars_vec]),
   Y = d$cents_to_amf_change,
