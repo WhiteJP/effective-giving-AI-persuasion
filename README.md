@@ -6,13 +6,13 @@ Project repository for "Increasing the effectiveness of charitable giving using 
 
 This repository contains the code supporting the analyses in our paper:
 
-**White, J. P., Allen, C., Caviola, L., Costello, T., & Rand, D. G. (2025). Increasing the effectiveness of charitable giving using human-AI dialogues.** *PsyArXiv*. https://osf.io/preprints/psyarxiv/39hcj_v1
+**White, J. P., Allen, C., Caviola, L., Costello, T., & Rand, D. G. (2025). Increasing the effectiveness of charitable giving using human-AI dialogues.** *PsyArXiv*. https://osf.io/preprints/psyarxiv/6cyn4_v1
 
 ### BibTeX Citation
 ```bibtex
 @misc{white_effective-giving-ai-persuasion,
  title={Increasing the effectiveness of charitable giving using human-AI dialogues},
- url={osf.io/preprints/psyarxiv/39hcj_v1},
+ url={osf.io/preprints/psyarxiv/6cyn4_v1},
  publisher={PsyArXiv},
  author={White, Joshua P and Allen, Carter and Caviola, Lucius and Costello, Thomas and Rand, David G}
 }
