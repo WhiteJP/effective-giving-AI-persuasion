@@ -91,7 +91,7 @@ The study investigates whether AI-powered conversations can be more persuasive t
 
 # Download and prepare data
 source("scripts/download_data.R")
-#download_osf_data_dir("6ya5n")
+download_osf_data_dir("6ya5n")
 ```
 
 # Sample Descriptives and Attrition Analysis
@@ -282,10 +282,5 @@ To reproduce this analysis:
 1. Ensure all required R packages are installed (see `libraries.R`)
 2. Install Quarto if not already installed: `install.packages("quarto")` then `quarto::quarto_install()`
 3. Download the data using the provided OSF repository
-4. Run this Quarto file with `quarto render main_report.qmd`
+4. Run this Quarto file with `quarto render main_report.qmd` or pressing `Render` in Rstudio. 
 
-The analysis can be customized by modifying the YAML parameters at the top of this document.
-
-## Alternative: R Markdown Version
-
-For users who prefer R Markdown or don't have Quarto installed, a compatible version of this report is available as `main_report.Rmd` which uses child chunks for script execution.

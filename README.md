@@ -2,7 +2,83 @@
 
 Project repository for "Increasing the effectiveness of charitable giving using human-AI dialogues"
 
+## Paper
 
+This repository contains the code supporting the analyses in our paper:
 
-This project contains the code supporting the analyses in this paper. The data can be found on the OSF: \[here](https://osf.io/6ya5n/?view\_only=fa984c3fa7034080ba097802946693b8). 
+**White, J. P., Allen, C., Caviola, L., Costello, T., & Rand, D. G. (2024). Increasing the effectiveness of charitable giving using human-AI dialogues.** *PsyArXiv*. https://osf.io/preprints/psyarxiv/39hcj_v1
 
+### BibTeX Citation
+```bibtex
+@misc{white_effective-giving-ai-persuasion,
+ title={Increasing the effectiveness of charitable giving using human-AI dialogues},
+ url={osf.io/preprints/psyarxiv/39hcj_v1},
+ publisher={PsyArXiv},
+ author={White, Joshua P and Allen, Carter and Caviola, Lucius and Costello, Thomas and Rand, David G}
+}
+```
+
+## Repository Structure
+
+This repository contains:
+
+- **`scripts/`**: R scripts for data analysis, organized by topic
+  - `analysis/`: Main analysis scripts (ATEs, heterogeneity, motivation analysis, etc.)
+  - `figures/`: Scripts for generating figures
+  - `tables/`: Scripts for creating tables
+  - `nlp/`: Python scripts for natural language processing tasks
+- **`data/`**: Data files (after downloading)
+- **`output/`**: Generated figures and output files
+- **`main.R`**: Master script that runs all analyses in sequence
+- **`main_report.qmd`**: Quarto document for the main report (which runs the same scripts as `main.R`, but automates it and puts it all in the one document)
+
+## Data
+
+The data for this project is hosted on the Open Science Framework (OSF): [https://osf.io/6ya5n](https://osf.io/6ya5n)
+
+**Automatic Download**: You can download the data automatically by running the `scripts/download_data.R` script, which will be run automatically with the `main_report.qmd`, or in `main.R`.
+
+## Running the Analysis
+
+There are two ways to run the analysis:
+
+### Option 1: Generate the Report with Quarto
+
+#### Installing Quarto
+
+First, install Quarto (if you don't have it):
+
+```r
+install.packages("quarto")
+quarto::install_quarto()
+```
+
+#### Running the Report
+
+**RStudio/Posit**:
+1. Open `main_report.qmd` in RStudio
+2. Click the "Render" button in the editor
+3. Choose your preferred output format (PDF recommended)
+
+**R Programmatically**:
+```r
+quarto::quarto_render("main_report.qmd", output_format = "pdf")
+```
+
+**Available Output Formats**:
+- PDF (recommended): `quarto::quarto_render("main_report.qmd", output_format = "pdf")`
+- HTML: `quarto::quarto_render("main_report.qmd", output_format = "html")`
+
+The rendered report will be saved as `output/main_report.pdf` (or `.html`).
+
+### Option 2: Run R Scripts Directly
+
+1. Open `main.R` in R or RStudio
+2. Run the script sequentially - it will execute all analysis scripts in the correct order
+3. All figures and output will be saved to the `output/` directory
+
+## Output
+
+All generated figures, tables, and output files are saved in the `output/` directory:
+- `figures/`: All generated plots and visualizations
+- `main_report.pdf`: The complete rendered report 
