@@ -1,21 +1,23 @@
 Package: effectiveGivingAI
-Type: Package
-Title: Effective Giving AI Persuasion Analysis Package
+Type: Project
+Title: Effective Giving AI Persuasion Analysis
 Version: 1.0.0
-Authors@R: 
-    person("Josh", "White", 
-           email = "jpwhite@mit.edu",
-           role = c("aut", "cre"))
-Description: R package with analyses supporting the paper "Increasing the effectiveness of charitable giving using human-AI dialogues".
+Description: Analysis supporting the paper "Increasing the effectiveness of charitable giving using human-AI dialogues"
 License: CC-By Attribution 4.0 International
-Encoding: UTF-8
-LazyData: true
-RoxygenNote: 7.2.3
 Depends: 
-    R (>= 4.2.0)
-Imports:
+    R (>= 4.2.0),
     dplyr,
+    ggplot2,
+    fs,
+    readr,
+    tidyr,
+    tibble,
+    rlang,
+    scales,
+    stats
+Imports:
     data.table,
+    here,
     purrr,
     stringr,
     glue,
@@ -24,34 +26,30 @@ Imports:
     estimatr,
     marginaleffects,
     broom,
-    ggplot2,
     patchwork,
     ggdist,
-    ggtext,
     ggExtra,
     ggsci,
     jpeg,
-    grid,
     gridtext,
     gridExtra,
     rvest,
-    xml2,
-    here,
-    fs,
     osfr,
     gt,
     kableExtra,
     modelsummary,
-    readr,
-    tidyr,
     car,
     forcats,
-    tibble,
-    qvalue
-Suggests:
-    quarto,
-    testthat (>= 3.0.0),
+    qvalue,
+    desc,
     knitr,
-    rmarkdown
-VignetteBuilder: knitr
-
+    rmarkdown,
+    MASS,
+    janitor,
+    cowplot,
+    gratia,
+    psych,
+    multcomp
+Suggests:
+    renv,
+    quarto
