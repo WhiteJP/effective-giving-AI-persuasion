@@ -26,15 +26,15 @@ cond_names_short <- c(
 
 # Comparison names for statistical contrasts
 comparison_names <- c(
-  "mean(static_treatment) - mean(control)" = "Static Message - Control",
-  "mean(conv_treatment) - mean(control)" = "LLM conversation - Control",
-  "mean(conv_treatment) - mean(static_treatment)" = "LLM conversation - Static Message"
+  "static_treatment - control" = "Static Message - Control",
+  "conv_treatment - control" = "LLM conversation - Control",
+  "conv_treatment - static_treatment" = "LLM conversation - Static Message"
 )
 
 comparison_names_short <- c(
-  "mean(static_treatment) - mean(control)" = "Static Message - Control",
-  "mean(conv_treatment) - mean(control)" = "LLM conv. - Control",
-  "mean(conv_treatment) - mean(static_treatment)" = "LLM conv. - Static Message"
+  "static_treatment - control" = "Static Message - Control",
+  "conv_treatment - control" = "LLM conv. - Control",
+  "conv_treatment - static_treatment" = "LLM conv. - Static Message"
 )
 
 comparison_names_cate <- paste0(comparison_names, ", CATE")

@@ -87,7 +87,7 @@ p2 <- ggplot(coef_df, aes(x = estimate, y = strategy, fill = sig)) +
       neg = amf_red,      # significant & negative
       ns  = "grey80"      # non-significant
     ),
-    guide = FALSE
+    guide = "none"
   ) +
   labs(x = "OLS Coefficient", y = NULL) +
   theme_bw(base_size = 11) +

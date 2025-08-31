@@ -10,46 +10,42 @@ d <- d %>%
 
 # CHARITY
 char_het <- het_by_cat("charity_fct", d, control_var = "cents_to_amf_pre_cat")
-char_het
+char_het$omnibus_tests
 
-# look at comparisons between everything here
-char_cate_comparisons <- marginaleffects::avg_comparisons(
-  char_het$lm_mod,
-  variables = list("condition" = "minmax"), # just conv v control
+# Just want comparisons of conv - control, with Holms correction
+char_cate_comparisons <- avg_comparisons(
+  char_het$mod,
+  variables = list(condition = "minmax"), # conv - control (max - min)
   newdata = "balanced",
-  by = c("charity_fct"),
-  hypothesis = "pairwise",
-  p_adjust = "holm"
-) 
+  by = "charity_fct",
+  hypothesis = difference ~ pairwise
+) |> 
+  hypotheses(multcomp = "holm") # holm comparisons
 
-char_cate_comparisons 
-
-# none less thatn .05 after holm
+# none less than .05 after holm
 char_cate_comparisons |> 
-  arrange(desc(abs(estimate))) |> 
-  as_tibble() |> 
-  filter(p.value < .05) |> 
-  print(n = Inf)
+  filter(p.value < .05)
 
 # Location
 loc_het <- het_by_cat("location_cat3", d_where, control_var = "cents_to_amf_pre_cat") 
-loc_het
+loc_het$omnibus_tests
 
+# Just want comparisons of conv - control, with Holms correction
 loc_cate_comparisons <- marginaleffects::avg_comparisons(
-  loc_het$lm_mod,
-  variables = list("condition" = "minmax"), # just conv v control
+  loc_het$mod,
+  variables = list(condition = "minmax"), # conv - control (max - min)
   newdata = "balanced",
-  by = c("location_cat3"),
-  hypothesis = "pairwise",
-  p_adjust = "holm"
-) 
+  by = "location_cat3",
+  hypothesis = difference ~ pairwise
+) |> 
+  hypotheses(multcomp = "holm")
 
+# sig comparisons
 loc_cate_comparisons |> 
   arrange(desc(abs(estimate))) |> 
   as_tibble() |> 
-  filter(p.value < .05) |> 
-  print(n = Inf)
+  filter(p.value < .05)
 
-## NOW for binned variables, cause area (subj) and population served (pop)
+## Now for binned variables, cause area (subj) and population served (pop)
 subj1_cond <- het_by_bins_cond("subj", d_subj1) #Level 1 of PCS
 pop2_cond <- het_by_bins_cond("pop", d_pop2) #Lvl 2 of PCS

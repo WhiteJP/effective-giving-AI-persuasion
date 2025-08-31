@@ -4,8 +4,7 @@
 # do one gam plot to extract legend
 plot_w_legend <- run_gam_simple(d, "age", add_hist = FALSE, include_legend = TRUE)$pred_plot +
   theme(legend.position = "bottom") 
-
-legend <- cowplot::get_plot_component(plot_w_legend, "guide-box", return_all = TRUE)[[3]] 
+legend <- cowplot::get_legend(plot_w_legend)
 
 gam_plots <- lapply(gams, function(g) g$pred_plot)
 all_plots <- c(list(importance_plot), gam_plots[c(1, 3, 4)], list(legend))

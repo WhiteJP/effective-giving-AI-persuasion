@@ -12,17 +12,22 @@
 ## Heterogeneity analysis by categorical variable
 ## Runs regression with treatment-categorical variable interactions and returns
 ## omnibus tests, marginal effects, and comparison plots
-het_by_cat <- function(cat_var, d, out_var = "cents_to_amf_change", control_var = "cents_to_amf_pre_cat") {
+het_by_cat <- function(
+    cat_var, 
+    d, 
+    out_var = "cents_to_amf_change", 
+    control_var = "cents_to_amf_pre_cat"
+) {
   # run lm 
   mod <- estimatr::lm_robust(
     as.formula(paste(out_var, "~ condition*", cat_var, "+ condition*", control_var)),
     data = d
   )
   
-  ## get ombibus f-test
+  ## get omnibus F-test
   omnibus_tests <- run_ombinus_tests(mod, cat_var)
   
-  ## get comparisons
+  ## get CATE comparisons
   comps <- marginaleffects::avg_comparisons(
     mod,
     variables = list("condition" = "pairwise"),
@@ -30,7 +35,7 @@ het_by_cat <- function(cat_var, d, out_var = "cents_to_amf_change", control_var 
     by = cat_var
   )
   
-  ## get marginal effect plot
+  ## get model predictions
   preds <- marginaleffects::avg_predictions(
     mod,
     variables = control_var,
@@ -52,27 +57,35 @@ het_by_cat <- function(cat_var, d, out_var = "cents_to_amf_change", control_var 
   
   ## return objects
   list(
-    lm_mod = mod, 
+    mod = mod, 
     omnibus_tests = omnibus_tests,
     comparisons = comps, 
     preds = preds,
-    marg_plot = marg_plot)
+    marg_plot = marg_plot
+  )
 }
 
 ## Heterogeneity analysis by binned categorical variables
-## Handles multiple binary variables (that together form some sort of non-mutually exlusive categorization) 
+## Handles multiple binary variables (that together are non-mutually exclusive categorization) 
 ## with minimum sample size requirements
-het_by_bins_cond <- function(prefix, d, out_var = "cents_to_amf_change", control_var = "cents_to_amf_pre_cat", min_n = 10) {
+het_by_bins_cond <- function(
+    prefix, 
+    d,
+    out_var = "cents_to_amf_change", 
+    control_var = "cents_to_amf_pre_cat", 
+    min_n = 10
+) {
   obj <- run_bin_het_mod(prefix, d, out_var, control_var, min_n)
   counts <- obj$counts
   mod <- obj$mod
   d <- obj$newd
   het_vars <- obj$het_vars
   
-  ## get ombibus f-test
+  ## get omnibus F-tests
   omnibus_tests <- run_ombinus_tests(mod, prefix)
   
-  # PREDICTIONS
+  # Get predictions, for each condition, with level on (1), and off (0),
+  # with all other levels off (0)
   preds_all <- map_dfr(
     het_vars,
     function(var) {
@@ -92,16 +105,23 @@ het_by_bins_cond <- function(prefix, d, out_var = "cents_to_amf_change", control
     }
   )
   
+  # plot this
   pred_plot <- preds_all %>% 
-    ggplot(aes(x = factor(var_value), y = estimate, color = condition, group = condition)) +
+    ggplot(
+      aes(x = factor(var_value), y = estimate, color = condition, group = condition)
+    ) +
     geom_point(position = position_dodge(width = 0.5)) +
-    geom_linerange(aes(ymin = conf.low, ymax = conf.high), position = position_dodge(width = 0.5)) +
+    geom_linerange(
+      aes(ymin = conf.low, ymax = conf.high), 
+      position = position_dodge(width = 0.5)
+    ) +
     facet_wrap(~ var, scales = "free_x") +
     labs(title = "Predicted Outcome by Treatment Condition and Binary Moderator",
          x = "Moderator Level (0/1)",
          y = "Predicted Outcome (Change Score)")
   
-  ## now get 0, 1 contrasts for each variable
+  ## now get these 0-1 contrasts
+  ## computes diff in prediction, for each group, if level is on (1) v off (0)
   contrasts_all <- map_dfr(
     het_vars,
     function(var) {
@@ -115,7 +135,7 @@ het_by_bins_cond <- function(prefix, d, out_var = "cents_to_amf_change", control
     }
   )
   
-  # Create a plot showing contrasts
+  # plot showing this
   contrasts_plot <- contrasts_all %>% 
     ggplot(aes(x = term, y = estimate, color = condition, group = condition)) +
     geom_point(position = position_dodge(width = 0.5)) +
@@ -124,6 +144,7 @@ het_by_bins_cond <- function(prefix, d, out_var = "cents_to_amf_change", control
          x = "Moderator Level",
          y = "Change in prediction when mod = 1")
   
+  # now get comparisons of these between conditions
   dd_contrasts <- map_dfr(
     het_vars,
     function(var) {
@@ -134,13 +155,13 @@ het_by_bins_cond <- function(prefix, d, out_var = "cents_to_amf_change", control
         variables = set_names(list(c(0, 1)), var),
         # do one ΔΔ per moderator:
         by        = "condition",
-        hypothesis = "revpairwise" # gets correct ordering of conditions
+        hypothesis = difference ~ revpairwise # gets correct ordering of conditions
       ) %>%
         mutate(var = var)
     }
   )
   
-  #CATES
+  # Plot these
   cates_plot <- dd_contrasts %>% 
     ggplot(aes(x = var, y = estimate, color = term, group = term)) +
     geom_point(position = position_dodge(width = 0.5)) +
@@ -149,7 +170,8 @@ het_by_bins_cond <- function(prefix, d, out_var = "cents_to_amf_change", control
          x = "Moderator",
          y = "ATE")
   
-  ## Profile Treatment Effects
+  ## Profile Treatment Effects -- thing reported in paper
+  ## contrasts when level on v off, with all others off.
   te_data <- map_dfr(
     het_vars,
     function(var) {
@@ -157,6 +179,7 @@ het_by_bins_cond <- function(prefix, d, out_var = "cents_to_amf_change", control
         mutate(profile_var = var, .keep = "unused")
     }
   )
+  
   
   profile_tes <- marginaleffects::avg_comparisons(
     mod,
@@ -169,10 +192,10 @@ het_by_bins_cond <- function(prefix, d, out_var = "cents_to_amf_change", control
     mod,
     newdata = te_data,
     variables = list("condition" = "minmax"), # just conv v control
-    by = c("profile_var"),
-    hypothesis = "pairwise",
-    p_adjust = "holm"
-  )
+    by = "profile_var",
+    hypothesis = difference ~ pairwise
+  ) |> 
+    hypotheses(multcomp = "holm")
   
   # return a list of results
   list(

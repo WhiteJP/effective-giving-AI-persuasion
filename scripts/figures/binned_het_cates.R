@@ -19,7 +19,7 @@ subj1_cond$mod |>
 #pop2_cond$profile_tes_diff
 
 p1 <- subj1_cond$profile_tes |>  
-  filter(contrast == "mean(conv_treatment) - mean(control)") |> 
+  filter(contrast == "conv_treatment - control") |> 
   mutate(
     cause_area = clean_names(gsub("subj_", "",  profile_var)),
     cause_area = fct_reorder(cause_area, estimate)
@@ -45,7 +45,7 @@ p1 <- subj1_cond$profile_tes |>
 
 
 p2 <- pop2_cond$profile_tes |>  
-  filter(contrast == "mean(conv_treatment) - mean(control)") |> 
+  filter(contrast == "conv_treatment - control") |> 
   mutate(
     population_served = clean_names(gsub("pop_", "",  profile_var)),
     population_served = fct_reorder(population_served, estimate)

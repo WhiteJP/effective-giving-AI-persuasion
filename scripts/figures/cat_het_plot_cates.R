@@ -12,14 +12,18 @@ symbol_size <- 1.5
 
 
 ## FOR CHARITY HETEROGENEITY
+
+# get treatment effect for each charity
 df_plot <- char_het$comparisons |> 
-  filter(contrast == "mean(conv_treatment) - mean(control)") |>
+  filter(contrast == "conv_treatment - control") |>
   mutate(
     charity_fct = fct_reorder(charity_fct, estimate, \(x) median(abs(x))),
     #charity_fct = fct_rev(charity_fct),
     contrast = factor(contrast, levels = unique(contrast))
   )
 
+# get (adjusted) p values for all the comparisons
+# none, are significange, so this is empty
 manual_p <- char_cate_comparisons %>%
   tidyr::extract(
     term,
@@ -27,7 +31,7 @@ manual_p <- char_cate_comparisons %>%
     regex = "^\\((.+)\\)\\s*-\\s*\\((.+)\\)$"
   ) %>%
   mutate(
-    contrast = "mean(conv_treatment) - mean(control)",
+    contrast = "conv_treatment - control",
     code1 = as.integer(factor(group1, levels = levels(df_plot$charity_fct))),
     code2 = as.integer(factor(group2, levels = levels(df_plot$charity_fct))),
     group1 = factor(levels(df_plot$charity_fct)[pmax(code1, code2)],
@@ -146,7 +150,7 @@ p1 <- ggplot(df_plot, aes(x = estimate, y = charity_fct, color = contrast)) +
 
 # 2. Prepare forest‐plot data
 df_plot <- loc_het$comparisons %>%
-  filter(contrast == "mean(conv_treatment) - mean(control)") %>%
+  filter(contrast == "conv_treatment - control") %>%
   mutate(
     location = fct_rev(location_cat3),
     contrast = factor(contrast, levels = unique(contrast))
@@ -155,9 +159,9 @@ df_plot <- loc_het$comparisons %>%
 # 3. Parse & filter only within‐contrast significant tests
 manual_p <- loc_cate_comparisons %>%
   tidyr::extract(
-    term,
+    hypothesis,
     into = c("group1", "group2"),
-    regex = "^(.*)\\s-\\s(.*)$"
+    regex = "^\\(([^)]*)\\)\\s*-\\s*\\(([^)]*)\\)$"
   ) %>%
   mutate(
     p_str  = as.character(p.value),
@@ -177,7 +181,7 @@ manual_p <- loc_cate_comparisons %>%
       p_num < 0.10         ~ "diamond",
       TRUE             ~ NA_character_
     ),
-    contrast = "mean(conv_treatment) - mean(control)"
+    contrast = "conv_treatment - control"
   ) %>%
   filter(!is.na(signif)) %>%
   mutate(
