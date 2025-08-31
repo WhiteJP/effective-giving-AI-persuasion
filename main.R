@@ -2,8 +2,6 @@
 # Effective Giving AI Persuasion Project - Main Analysis Script
 # =============================================================================
 
-# Load all required packages first
-source("scripts/libraries.R")
 
 # Set WD
 loc <- here::here()

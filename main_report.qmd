@@ -20,7 +20,7 @@ format:
   pdf:
     toc: true
     number-sections: true
-    df_printe: kable
+    df_print: kable
     fig-align: center
     fig-width: 7.085
     fig-height: 5
@@ -34,15 +34,15 @@ format:
        text: |
          \usepackage{fvextra}
          \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
-include-before-body:
-  text: |
-    \RecustomVerbatimEnvironment{verbatim}{Verbatim}{
-      showspaces = false,
-      showtabs = false,
-      breaksymbolleft={},
-      breaklines
-      % Note: setting commandchars=\\\{\} here will cause an error 
-    }
+    include-before-body:
+      text: |
+        \RecustomVerbatimEnvironment{verbatim}{Verbatim}{
+          showspaces = false,
+          showtabs = false,
+          breaksymbolleft={},
+          breaklines
+          % Note: setting commandchars=\\\{\} here will cause an error 
+        }
 execute:
   echo: true
   warning: false
@@ -55,8 +55,15 @@ params:
 #| label: setup
 #| include: false
 
-# Load all required packages and setup
-source("scripts/libraries.R")
+# load packages
+desc <- desc::desc(file = "DESCRIPTION")
+pkgs <- c(desc$get_deps()$package)
+invisible(lapply(pkgs, require, character.only = TRUE))
+
+# Download data if needed
+if (!dir.exists("data") || length(list.files("data")) == 0) {
+  download_osf_data()
+}
 
 # Load configuration and functions
 source("scripts/config.R")
@@ -89,9 +96,9 @@ The study investigates whether AI-powered conversations can be more persuasive t
 ```{r}
 #| label: data_setup
 
-# Download and prepare data
-source("scripts/download_data.R")
-download_osf_data_dir("6ya5n")
+# Data is automatically downloaded during setup
+# You can also manually download using:
+# download_osf_data("6ya5n")
 ```
 
 # Sample Descriptives and Attrition Analysis
