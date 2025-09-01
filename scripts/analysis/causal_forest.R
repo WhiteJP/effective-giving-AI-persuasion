@@ -46,7 +46,6 @@ covars_labels <- c(
 labels_map <- covars_labels
 names(labels_map) <- covars_vec
 
-
 # Run multi-arm causal forest
 set.seed(2882025) #results basically the same for all seed, but fix one for reproducibility
 ma_cf <- grf::multi_arm_causal_forest(
@@ -57,7 +56,8 @@ ma_cf <- grf::multi_arm_causal_forest(
 )
 
 ## ATE
-ate <- grf::average_treatment_effect(ma_cf) #ATE
+ate <- grf::average_treatment_effect(ma_cf) |> 
+  print()
 ites <- predict(ma_cf)$predictions
 
 static_ites <- ites[, 1, ]

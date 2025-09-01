@@ -128,23 +128,6 @@ p1 <- ggplot(df_plot, aes(x = estimate, y = charity_fct, color = contrast)) +
             aes(x = x, y = y, label = signif),
             inherit.aes = FALSE,
             hjust = 0.5, vjust = 0.25, size = 4)
-  #shapes
-  # geom_point(
-  #   data      = manual_p,
-  #   aes(x = x, y = y, shape = shape),
-  #   inherit.aes = FALSE,
-  #   size      = symbol_size
-  # ) +
-  # scale_shape_manual(
-  #   values = c(
-  #     circle   = 16,  # filled circle
-  #     square   = 15,  # filled square
-  #     triangle = 17,   # filled triangle-up
-  #     diamond  = 18    # filled diamond
-  #   ),
-  #   na.translate = FALSE
-  # )
-
 
 ## LOCATION HETEROGENEITY
 
@@ -249,26 +232,9 @@ p2 <- ggplot(df_plot, aes(x = estimate, y = location, color = contrast)) +
   geom_text(data = manual_p,
             aes(x = x, y = y, label = signif),
             inherit.aes = FALSE,
-            hjust = -.35, vjust = 0.5, size = 4)
-
-  #shapes
-  # geom_point(
-  #   data      = manual_p,
-  #   aes(x = x, y = y, shape = shape),
-  #   inherit.aes = FALSE,
-  #   size      = symbol_size
-  # ) +
-  # scale_shape_manual(
-  #   values = c(
-  #     circle   = 16,  # filled circle
-  #     square   = 15,  # filled square
-  #     triangle = 17   # filled triangle-up
-  #   ),
-  #   na.translate = FALSE
-  # )
+            hjust = -.35, vjust = 0.35, size = 4)
 
 # PUT TOGETHER
-
 (p1 + p2) +
   plot_annotation(tag_levels = "A") +
   plot_layout(guides = "collect", axes = "collect", widths = c(3/3, 1)) &

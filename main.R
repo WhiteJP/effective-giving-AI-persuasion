@@ -2,7 +2,6 @@
 # Effective Giving AI Persuasion Project - Main Analysis Script
 # =============================================================================
 
-
 # Set WD
 loc <- here::here()
 setwd(loc)
@@ -12,9 +11,16 @@ source("scripts/download_data.R")
 download_osf_data_dir("6ya5n")
 fs::dir_create("output", "figures") 
 
-# Configure, and define functions for analysis
+# Load config (sets global vars used throughout analysis)
 source("scripts/config.R")
-source("scripts/functions.R")
+
+# Load functions used for analysis
+source("scripts/functions/heterogeneity_functions.R")
+source("scripts/functions/agreement_functions.R")
+source("scripts/functions/pcs_hierarchy_functions.R")
+source("scripts/functions/gam_functions.R")
+source("scripts/functions/causal_forest_functions.R")
+source("scripts/functions/statistical_helpers.R")
 
 # Analysis
 source("scripts/analysis/attrition.R")

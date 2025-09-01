@@ -1,22 +1,24 @@
-
 d_candid <- read_csv("data/guidestar_data.csv") |> 
   janitor::clean_names() 
 
+## get list of all levels in each category
 pcs_population <- extract_unique_pcs_labels(d_candid$population_served)
 pcs_subjects <- extract_unique_pcs_labels(d_candid$subject_area)
 pcs_location <- extract_unique_pcs_labels(d_candid$where_we_work)
 
+## parse the PCS hierarchy
 pop_hierarchy <- parse_hierarchy("data/pcs_pop_hierarchy.html", leaves_as_vec = FALSE)
 subj_hierarchy <- parse_hierarchy("data/pcs_subj_hierarchy.html", leaves_as_vec = FALSE)
 
+## make dataframe of hierachies
 pop_hierarchy_df <- hierarchy_to_df(pop_hierarchy)
 subj_hierarchy_df <- hierarchy_to_df(subj_hierarchy)
 
+#find_missing_with_match(pcs_population, pop_hierarchy_df) 
+#find_missing_with_match(pcs_subjects, subj_hierarchy_df) 
 
-find_missing_with_match(pcs_population, pop_hierarchy_df) 
-find_missing_with_match(pcs_subjects, subj_hierarchy_df) 
-
-## replace them manually after looking at hierarchy for closest match
+## replacements where differences in output and hierarchy
+## looking at hierarchy for closest match, 
 pop_replacements <- c(
   "American Indians" = "American Indians/Native Americans",
   "At-risk youth" = "Out-of-home youth",
@@ -54,9 +56,9 @@ subj_replacemnents <- c(
   "Social rights" = "International human rights",
   "Temporary accomodations" = "Temporary accommodations"
 )
-
   
-# add higher levels of categores
+# add higher levels of categories, replace a term lower on the hierarchy
+# with its superordinate level
 d_candid <- d_candid |> 
   mutate(
     population_served = replace_terms_named(population_served, pop_replacements),
@@ -67,13 +69,13 @@ d_candid <- d_candid |>
     subj_lvl2 = replace_with_level(subject_area, subj_hierarchy_df, k = 2)
   )
 
-
+# get this as dummy coded matrix
 pcs_subj1_mat <- make_pcs_matrix(d_candid$subj_lvl1, "subj") |> mutate(ein = d_candid$ein) 
 pcs_subj2_mat <- make_pcs_matrix(d_candid$subj_lvl2, "subj") |> mutate(ein = d_candid$ein)
 pcs_pop1_mat <- make_pcs_matrix(d_candid$pop_lvl1, "pop") |> mutate(ein = d_candid$ein)
 pcs_pop2_mat <- make_pcs_matrix(d_candid$pop_lvl2, "pop") |> mutate(ein = d_candid$ein)
 
-# subject 1 counts
+# Get counts for each level (for subject/cause area, collapsed to highest level)
 d_subj1 <- d_all |> 
   dplyr::select(ResponseId, condition, starts_with("cents_to_amf"), ein) |>
   filter(ResponseId %in% ps_final) |> 
@@ -85,9 +87,10 @@ subj1_counts <- d_subj1 |>
   summarise(across(starts_with("subj"), ~ sum(.x))) |> 
   pivot_longer(cols = everything(), names_to = "subject_area", values_to = "count") |> 
   mutate(subject_area = str_remove(subject_area, "^subj_")) |>
-  arrange(desc(count))
+  arrange(desc(count)) |> 
+  print()
 
-# population 1 counts
+# Same but for population served
 d_pop1 <- d_all |> 
   dplyr::select(ResponseId, condition, starts_with("cents_to_amf"), ein) |>
   filter(ResponseId %in% ps_final) |> 
@@ -99,9 +102,10 @@ pop1_counts <- d_pop1 |>
   summarise(across(starts_with("pop"), ~ sum(.x))) |> 
   pivot_longer(cols = everything(), names_to = "population_area", values_to = "count") |> 
   mutate(population_area = str_remove(population_area, "^pop_")) |>
-  arrange(desc(count))
+  arrange(desc(count)) |> 
+  print()
 
-# subject 2 counts
+# now subjects at the second level of the PCS hierarchy
 d_subj2 <- d_all |> 
   select(ResponseId, condition, starts_with("cents_to_amf"), ein) |>
   filter(ResponseId %in% ps_final) |> 
@@ -113,9 +117,10 @@ subj2_counts <- d_subj2 |>
   summarise(across(starts_with("subj"), ~ sum(.x))) |> 
   pivot_longer(cols = everything(), names_to = "subject_area", values_to = "count") |> 
   mutate(subject_area = str_remove(subject_area, "^subj_")) |>
-  arrange(desc(count))
+  arrange(desc(count)) |> 
+  print()
 
-# population 2 counts
+# and now populatin at PCS level 2
 d_pop2 <- d_all |> 
   select(ResponseId, condition, starts_with("cents_to_amf"), ein) |>
   filter(ResponseId %in% ps_final) |> 
@@ -129,14 +134,16 @@ pop2_counts <- d_pop2 |>
   mutate(population_area = str_remove(population_area, "^pop_")) |>
   arrange(desc(count))
 
-## NOW lets look at the location data
+## Now lets look at the location data
+## d_where has output from models taking text strings and outputting
+## strategies in the paper
 d_where_orig <- read_csv("data/location_categories.csv") |> 
   janitor::clean_names() |> 
   mutate(
     location_cat = str_to_lower(category)
   )
 
-## summarize
+## summarize agreement between different models 
 d_where_mod_agreement <- d_where_orig %>%
   group_by(ein) %>%
   summarise(
@@ -153,7 +160,8 @@ d_where_mod_agreement <- d_where_orig %>%
     .groups = "drop"
   )
 
-## now lets get proportions of all of these, first for the whole dataset
+## now lets get proportions of all of these
+## first for the whole dataset
 d_where_mod_agreement |> 
   summarise(
     n_total = n(),
@@ -180,11 +188,12 @@ d_where_mod_agreement |>
     prop_all_agreement = n_all_agreement / n_total
   )
 
-# now lets look at when there is disagreement, what is the majority and minority answers, what proportion of the total category
+# now lets look at when there is disagreement, 
+# what is the majority and minority answers
 d_where_mod_agreement |> 
   count(majority_cat, minority_cat)
 
-## lets look at results with cat4, and cat3 (collapsing local and state)
+## aggregate to one category per charity, by majority vote
 d_where_agg <- d_where_orig |> 
   group_by(ein) |>
   summarise(
@@ -195,6 +204,8 @@ d_where_agg <- d_where_orig |>
     ),
   )
 
+## final location dataset, cat3 has internatonal, national, state/local
+## cat4 separates state and local (not used in paper)
 d_where <- d_all |> 
   select(ResponseId, condition, starts_with("cents_to_amf"), ein) |>
   filter(ResponseId %in% ps_final) |> 
@@ -215,3 +226,7 @@ d_where <- d_all |>
     ),
     is_international = if_else(location_cat3 == "International", 1L, 0L),
   )
+
+# Show counts for cat3
+d_where |> 
+  count(location_cat3)

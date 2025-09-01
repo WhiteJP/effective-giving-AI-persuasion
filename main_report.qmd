@@ -1,7 +1,7 @@
 ---
 title: "Effective Giving AI Persuasion Project - Complete Analysis Report"
 author: "Josh White"
-date: 27 August 2025
+date: 31 August 2025
 format:
   html:
     toc: true
@@ -55,7 +55,9 @@ params:
 #| label: setup
 #| include: false
 
-# load main packages
+# attach main packages
+# Imports, called via ::
+# Suggests, not used
 desc <- desc::desc(file = "DESCRIPTION")
 deps <- desc$get_deps()
 pkgs <- deps$package[deps$type == "Depends" & deps$package != "R"]
@@ -63,12 +65,20 @@ invisible(lapply(pkgs, require, character.only = TRUE))
 
 # Download data if needed
 if (!dir.exists("data") || length(list.files("data")) == 0) {
-  download_osf_data()
+  source("scripts/download_data.R")
+  download_osf_data_dir("6ya5n")
 }
 
-# Load configuration and functions
+# Load config (sets global vars used throughout analysis)
 source("scripts/config.R")
-source("scripts/functions.R")
+
+# Load functions used for analysis
+source("scripts/functions/heterogeneity_functions.R")
+source("scripts/functions/agreement_functions.R")
+source("scripts/functions/pcs_hierarchy_functions.R")
+source("scripts/functions/gam_functions.R")
+source("scripts/functions/causal_forest_functions.R")
+source("scripts/functions/statistical_helpers.R")
 
 # Create output directories if they don't exist
 fs::dir_create("output", "figures")
@@ -183,6 +193,7 @@ The study investigates whether AI-powered conversations can be more persuasive t
 #| file: scripts/figures/charity_descriptive_plot.R
 #| label: charity_plot
 #| fig-cap: "Figure 2: Charity descriptive statistics"
+#| fig-height: 7.1
 ```
 
 ## Motivation Plots
@@ -191,6 +202,7 @@ The study investigates whether AI-powered conversations can be more persuasive t
 #| file: scripts/figures/motivation_plots.R
 #| label: motivation_plots
 #| fig-cap: "Figure S1: Motivation analysis plots"
+#| fig-height: 3.5
 ```
 
 ## Main Treatment Effects Plot
@@ -199,6 +211,7 @@ The study investigates whether AI-powered conversations can be more persuasive t
 #| file: scripts/figures/main_plot.R
 #| label: main_plot
 #| fig-cap: "Figure 3: Main treatment effects"
+#| fig-height: 3
 ```
 
 ## Categorical Heterogeneity Plot
@@ -207,6 +220,7 @@ The study investigates whether AI-powered conversations can be more persuasive t
 #| file: scripts/figures/cat_het_plot_cates.R
 #| label: cat_het_plot
 #| fig-cap: "Figure 4: Categorical heterogeneity in treatment effects"
+#| fig-height: 3.5
 ```
 
 ## Binned Heterogeneity Plot
@@ -215,6 +229,7 @@ The study investigates whether AI-powered conversations can be more persuasive t
 #| file: scripts/figures/binned_het_cates.R
 #| label: binned_het_plot
 #| fig-cap: "Figure S2: Binned heterogeneity analysis"
+#| fig-height: 6
 ```
 
 ## VIP and GAM Plot
@@ -223,6 +238,7 @@ The study investigates whether AI-powered conversations can be more persuasive t
 #| file: scripts/figures/vip_and_gam_plot.R
 #| label: vip_gam_plot
 #| fig-cap: "Figure 5: Variable importance and GAM analysis"
+#| fig-height: 6
 ```
 
 ## Causal Forest Plots
@@ -230,7 +246,8 @@ The study investigates whether AI-powered conversations can be more persuasive t
 ```{r}
 #| file: scripts/figures/causal_forest_plots.R
 #| label: causal_forest_plots
-#| fig-cap: "Figures S3 and S4: Causal forest analysis"
+#| fig-cap: "Figures S3 and S4: Partial dependence plots and unadjusted heterogeneity plots"
+#| fig-height: 9.3
 ```
 
 ## Strategy Plot
@@ -239,6 +256,7 @@ The study investigates whether AI-powered conversations can be more persuasive t
 #| file: scripts/figures/strategy_plot.R
 #| label: strategy_plot
 #| fig-cap: "Figure 6: Persuasive strategies analysis"
+#| fig-height: 7
 ```
 
 ## Accuracy Figure
@@ -247,6 +265,7 @@ The study investigates whether AI-powered conversations can be more persuasive t
 #| file: scripts/figures/accuracy_figure.R
 #| label: accuracy_figure
 #| fig-cap: "Figure S5: AI accuracy assessment"
+#| fig-height: 4
 ```
 
 # Tables
@@ -282,13 +301,4 @@ sessionInfo()
 - Raw data and processed datasets are available in the `data/` directory
 - Python scripts for NLP processing are located in `scripts/nlp/`
 - This report can be generated with or without code chunks using the `include_code` parameter
-
-## Reproducibility
-
-To reproduce this analysis:
-
-1. Ensure all required R packages are installed (see `libraries.R`)
-2. Install Quarto if not already installed: `install.packages("quarto")` then `quarto::quarto_install()`
-3. Download the data using the provided OSF repository
-4. Run this Quarto file with `quarto render main_report.qmd` or pressing `Render` in Rstudio. 
 

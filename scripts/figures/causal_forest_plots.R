@@ -3,6 +3,7 @@ uhps <- plot_all_uhps(
   conv_ites, static_ites, d, 
   importance_tbl$variable_dirty, importance_tbl$variable
 )
+uhps
 ggsave(
   "output/figures/uhps.png",
   uhps,
@@ -14,6 +15,7 @@ pdps <- plot_all_pdps(
   ma_cf, as.matrix(d[, covars_vec]), 
   importance_tbl$variable_dirty, labels_map
 )
+pdps
 ggsave(
   "output/figures/pdps.png",
   pdps,

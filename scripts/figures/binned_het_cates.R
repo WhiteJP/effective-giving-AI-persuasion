@@ -1,22 +1,5 @@
-## binned categorical variable plots
-subj1_cond$mod |> 
-  broom::tidy() |> 
-  dplyr::filter(grepl("^conditionconv_treatment:subj", term)) |> 
-  mutate(
-    cause_area = gsub("conditionconv_treatment:subj_", "", term),
-    cause_area = clean_names(cause_area)
-  ) |> 
-  ggplot(aes(x = estimate, y = cause_area)) +
-  geom_point() +
-  geom_errorbar(aes(xmin = conf.low, xmax = conf.high)) +
-  labs(x = "Estimated CATE", y = "Cause Area") +
-  theme_minimal()
-
-
-## Profile TEs
-# no sig differences between any groups
-#subj1_cond$profile_tes_diff 
-#pop2_cond$profile_tes_diff
+## CATES
+# no sig differences between any groups, with holms
 
 p1 <- subj1_cond$profile_tes |>  
   filter(contrast == "conv_treatment - control") |> 
@@ -40,9 +23,6 @@ p1 <- subj1_cond$profile_tes |>
     x = "Conditional Average Treatment Effect (95% CI)", 
     y = NULL) +
   theme(legend.position = "bottom")
-
-
-
 
 p2 <- pop2_cond$profile_tes |>  
   filter(contrast == "conv_treatment - control") |> 

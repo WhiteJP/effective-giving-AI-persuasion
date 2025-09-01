@@ -46,6 +46,10 @@ loc_cate_comparisons |>
   as_tibble() |> 
   filter(p.value < .05)
 
-## Now for binned variables, cause area (subj) and population served (pop)
+## Now for binned variables, cause area (subj) 
 subj1_cond <- het_by_bins_cond("subj", d_subj1) #Level 1 of PCS
+subj1_cond$omnibus_tests
+
+## and population served (pop)
 pop2_cond <- het_by_bins_cond("pop", d_pop2) #Lvl 2 of PCS
+pop2_cond$omnibus_tests
