@@ -18,6 +18,7 @@ format:
     fig-dpi: 300
     fig-cap: true
   pdf:
+    pdf-engine: xelatex
     toc: true
     number-sections: true
     df_print: kable

@@ -32,9 +32,6 @@ Here you can reproduce all figures, tables, and statistical analyses presented i
   tested on v1.6.42, and v1.8.21. 
   - Install the R package: `install.packages("quarto")`
 - **LaTeX** - For PDF output (optional, HTML output works without it)
-  - Windows: [MiKTeX](https://miktex.org/)
-  - macOS: [MacTeX](https://www.tug.org/mactex/)
-  - Linux: [TeX Live](https://www.tug.org/texlive/)
 
 ### Recommended workflow
 
@@ -62,6 +59,8 @@ Here you can reproduce all figures, tables, and statistical analyses presented i
    # For HTML output (no LaTeX required, will not render tables)
    quarto::quarto_render("main_report.qmd", output_format = "html")
    ```
+   (Or click 'Render' in RStudio) 
+   
    ⏱️ This will take 5-10 minutes on an average computer.
 
 ### Expected Output

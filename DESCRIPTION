@@ -5,7 +5,7 @@ Version: 1.0.0
 Description: Analysis supporting the paper "Increasing the effectiveness of charitable giving using human-AI dialogues"
 License: CC-By Attribution 4.0 International
 Depends: 
-    R (>= 4.2.0),
+    R (>= 4.5.0),
     dplyr,
     readr,
     tidyr,
