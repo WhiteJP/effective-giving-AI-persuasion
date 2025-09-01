@@ -1,6 +1,8 @@
 # effective-giving-AI-persuasion
 
-This repository contains the code supporting the analyses in our paper: "Increasing the effectiveness of charitable giving using human-AI dialogues". Here, you can reproduce all the figures and analyses from the paper. Note, we use the `renv` package to ensure reproducibility ... 
+This repository contains the complete code and data analysis pipeline for our research paper: **"Increasing the effectiveness of charitable giving using human-AI dialogues"**. 
+
+Here you can reproduce all figures, tables, and statistical analyses presented in the paper. We use the `renv` package to ensure exact reproducibility of our computational environment and results. 
 
 ## Paper
 
