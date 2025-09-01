@@ -75,7 +75,7 @@ pcs_pop2_mat <- make_pcs_matrix(d_candid$pop_lvl2, "pop") |> mutate(ein = d_cand
 
 # subject 1 counts
 d_subj1 <- d_all |> 
-  select(ResponseId, condition, starts_with("cents_to_amf"), ein) |>
+  dplyr::select(ResponseId, condition, starts_with("cents_to_amf"), ein) |>
   filter(ResponseId %in% ps_final) |> 
   mutate(ein = format_ein(ein)) |> 
   left_join(pcs_subj1_mat, by = "ein") |> 
@@ -87,17 +87,9 @@ subj1_counts <- d_subj1 |>
   mutate(subject_area = str_remove(subject_area, "^subj_")) |>
   arrange(desc(count))
 
-#plot
-subj1_counts |> 
-  ggplot(aes(x = reorder(subject_area, count), y = count)) +
-  geom_col() +
-  coord_flip() +
-  labs(x = "Subject area", y = "Count") +
-  theme_minimal()
-
 # population 1 counts
 d_pop1 <- d_all |> 
-  select(ResponseId, condition, starts_with("cents_to_amf"), ein) |>
+  dplyr::select(ResponseId, condition, starts_with("cents_to_amf"), ein) |>
   filter(ResponseId %in% ps_final) |> 
   mutate(ein = format_ein(ein)) |> 
   left_join(pcs_pop1_mat, by = "ein") |> 
@@ -109,14 +101,6 @@ pop1_counts <- d_pop1 |>
   mutate(population_area = str_remove(population_area, "^pop_")) |>
   arrange(desc(count))
 
-#plot
-pop1_counts |> 
-  ggplot(aes(x = reorder(population_area, count), y = count)) +
-  geom_col() +
-  coord_flip() +
-  labs(x = "Population area", y = "Count") +
-  theme_minimal()
-
 # subject 2 counts
 d_subj2 <- d_all |> 
   select(ResponseId, condition, starts_with("cents_to_amf"), ein) |>
@@ -125,20 +109,11 @@ d_subj2 <- d_all |>
   left_join(pcs_subj2_mat, by = "ein") |> 
   set_unknown_on_na("subj", "subj_unknown_or_not_classified")
 
-
 subj2_counts <- d_subj2 |> 
   summarise(across(starts_with("subj"), ~ sum(.x))) |> 
   pivot_longer(cols = everything(), names_to = "subject_area", values_to = "count") |> 
   mutate(subject_area = str_remove(subject_area, "^subj_")) |>
   arrange(desc(count))
-
-#plot
-subj2_counts |> 
-  ggplot(aes(x = reorder(subject_area, count), y = count)) +
-  geom_col() +
-  coord_flip() +
-  labs(x = "Subject area", y = "Count") +
-  theme_minimal()
 
 # population 2 counts
 d_pop2 <- d_all |> 
@@ -154,15 +129,6 @@ pop2_counts <- d_pop2 |>
   mutate(population_area = str_remove(population_area, "^pop_")) |>
   arrange(desc(count))
 
-#plot
-pop2_counts |> 
-  ggplot(aes(x = reorder(population_area, count), y = count)) +
-  geom_col() +
-  coord_flip() +
-  labs(x = "Population area", y = "Count") +
-  theme_minimal()
-
-
 ## NOW lets look at the location data
 d_where_orig <- read_csv("data/location_categories.csv") |> 
   janitor::clean_names() |> 
@@ -170,7 +136,7 @@ d_where_orig <- read_csv("data/location_categories.csv") |>
     location_cat = str_to_lower(category)
   )
 
-## summarizi
+## summarize
 d_where_mod_agreement <- d_where_orig %>%
   group_by(ein) %>%
   summarise(
@@ -249,16 +215,3 @@ d_where <- d_all |>
     ),
     is_international = if_else(location_cat3 == "International", 1L, 0L),
   )
-
-# plot cents_to_amf_change by location cats
-d_where |> 
-  ggplot(aes(x = location_cat4, y = cents_to_amf_change, col = condition)) +
-  #geom_jitter(position = position_dodge(width = 0.5), alpha = 0.5) +
-  stat_summary(fun = mean, geom = "point", position = position_dodge(width = 0.5)) +
-  stat_summary(fun.data = mean_se, geom = "errorbar", width = 0.2, position = position_dodge(width = 0.5))
-
-d_where |> 
-  ggplot(aes(x = location_cat3, y = cents_to_amf_change, col = condition)) +
-  #geom_jitter(position = position_dodge(width = 0.5), alpha = 0.5) +
-  stat_summary(fun = mean, geom = "point", position = position_dodge(width = 0.5)) +
-  stat_summary(fun.data = mean_se, geom = "errorbar", width = 0.2, position = position_dodge(width = 0.5))

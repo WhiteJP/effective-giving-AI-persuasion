@@ -55,9 +55,10 @@ params:
 #| label: setup
 #| include: false
 
-# load packages
+# load main packages
 desc <- desc::desc(file = "DESCRIPTION")
-pkgs <- c(desc$get_deps()$package)
+deps <- desc$get_deps()
+pkgs <- deps$package[deps$type == "Depends" & deps$package != "R"]
 invisible(lapply(pkgs, require, character.only = TRUE))
 
 # Download data if needed

@@ -22,7 +22,7 @@ p1 <- subj1_cond$profile_tes |>
   filter(contrast == "conv_treatment - control") |> 
   mutate(
     cause_area = clean_names(gsub("subj_", "",  profile_var)),
-    cause_area = fct_reorder(cause_area, estimate)
+    cause_area = forcats::fct_reorder(cause_area, estimate)
   ) |> 
   ggplot(aes(x = estimate, y = cause_area, color = contrast)) +
   # forest plot
@@ -48,7 +48,7 @@ p2 <- pop2_cond$profile_tes |>
   filter(contrast == "conv_treatment - control") |> 
   mutate(
     population_served = clean_names(gsub("pop_", "",  profile_var)),
-    population_served = fct_reorder(population_served, estimate)
+    population_served = forcats::fct_reorder(population_served, estimate)
   ) |> 
   ggplot(aes(x = estimate, y = population_served, color = contrast)) +
   # forest plot

@@ -62,7 +62,7 @@ coef_order = c(
   ".*"
 )
 
-table_latex <- modelsummary(
+table_latex <- modelsummary::msummary(
   list(
     "Donation Change" = mod_lm_donation,
     "Moral Belief Change" = mod_lm_char_wrong,

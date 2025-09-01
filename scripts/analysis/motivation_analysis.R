@@ -15,7 +15,7 @@ d_ratings_wide <- m_dat_all_long |>
   filter(variable != "DoesntGive") |> 
   pivot_wider(names_from = model, values_from = value) |> 
   select(-charity_reasons, -why_charity_general, -ResponseId) |> 
-  rename_with(~ str_remove(.x, "^.*/")) 
+  rename_with(~ stringr::str_remove(.x, "^.*/")) 
 
 agreement_analysis_by_group(d_ratings_wide, group_var ="variable")
 

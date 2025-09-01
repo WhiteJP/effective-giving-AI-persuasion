@@ -14,7 +14,7 @@ download_osf_dir <- function(osf_node,
   
   # List top-level files/folders on the node
   top_level <- tryCatch(
-    osf_ls_files(node, n_max = Inf),
+    osfr::osf_ls_files(node, n_max = Inf),
     error = function(e) stop("Failed to list files for node '", osf_node, "'. ", e$message, call. = FALSE)
   )
   
@@ -27,7 +27,7 @@ download_osf_dir <- function(osf_node,
   }
   
   all_files <- tryCatch(
-    osf_ls_files(data_dir, n_max = Inf),
+    osfr::osf_ls_files(data_dir, n_max = Inf),
     error = function(e) stop("Failed to list files in folder '", osf_dir_name, "'. ", e$message, call. = FALSE)
   )
   
@@ -47,7 +47,7 @@ download_osf_dir <- function(osf_node,
   
   message("Downloading ", nrow(all_files), " files to: ", dest_dir)
   downloaded <- tryCatch(
-    osf_download(all_files,
+    osfr::osf_download(all_files,
                  path = dest_dir,
                  conflicts = if (overwrite) "overwrite" else "skip",
                  progress = TRUE),

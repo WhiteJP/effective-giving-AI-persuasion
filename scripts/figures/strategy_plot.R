@@ -35,14 +35,14 @@ p1  <- d_strategy_agg_long %>%
     strategy = factor(strategy, levels = ranked_strats)
   ) %>%
   ggplot(aes(x = rating, y = strategy)) +
-  stat_slab(
+  ggdist::stat_slab(
     density = "histogram",
     breaks = seq(-0.25, 3.25, by = 0.5),
     fill = amf_blue,
     height = 0.5, 
     justification = 0.5
   ) +
-  stat_pointinterval(
+  ggdist::stat_pointinterval(
     point_interval = "mean_qi",
    .width  = 0.5, #IQR
    interval_size_domain = c(0, 20),
@@ -64,7 +64,7 @@ p1  <- d_strategy_agg_long %>%
   ) +
   theme_bw(base_size = 11) +
   theme(
-    axis.text.y      = element_markdown(lineheight = 0.9),
+    axis.text.y      = ggtext::element_markdown(lineheight = 0.9),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank()
   )

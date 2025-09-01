@@ -5,8 +5,8 @@ m_dat_long <- m_dat %>%
   pivot_longer(AwarenessOfNeed:Efficacy, names_to = "variable", values_to = "value") |> 
   filter(variable != "DoesntGive") %>%
   mutate(
-    label = fct_rev(factor(variable)),
-    label_formatted = fct_rev(factor(glue(
+    label = forcats::fct_rev(factor(variable)),
+    label_formatted = forcats::fct_rev(factor(glue::glue(
       "**{variable}**\n<span style='font-weight:normal; font-size:9pt'>{MOTIVATION_DESCRIPTIONS[variable]}</span>"
     ), levels = unique(variable)))
   )
@@ -26,7 +26,7 @@ m_dat_long %>%
   filter(variable != "DoesntGive") %>%
   mutate(variable = factor(variable, levels = names(label_map))) %>%
   ggplot(aes(x = value, y = variable)) +
-  stat_histinterval(
+  ggdist::stat_histinterval(
     point_interval = "mean_qi",
     breaks        = seq(0.75, 5.25, by = 0.5),
     slab_color    = NA,
@@ -52,7 +52,7 @@ m_dat_long %>%
   ) +
   theme_bw(base_size = 11) +
   theme(
-    axis.text.y      = element_markdown(lineheight = 0.9),
+    axis.text.y      = ggtext::element_markdown(lineheight = 0.9),
     plot.title       = element_text(face = "bold", size = 13, margin = margin(b = 4)),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank()

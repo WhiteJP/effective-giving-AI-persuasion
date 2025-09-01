@@ -1,5 +1,5 @@
-d_strategy1 <- read_csv("data/strategy_ratings_GPT4Sonnet3Deepseek.csv")
-d_strategy3.7 <- read_csv("data/strategy_ratings_GPT4oSonnet3.7.csv") # sonnet 3.7
+d_strategy1 <- readr::read_csv("data/strategy_ratings_GPT4Sonnet3Deepseek.csv")
+d_strategy3.7 <- readr::read_csv("data/strategy_ratings_GPT4oSonnet3.7.csv") # sonnet 3.7
 
 #combine all
 d_strategy <- d_strategy1 |> 
@@ -26,7 +26,7 @@ d_strat_agree_wide <- d_strategy_long |>
   filter(ResponseId %in% ps_final) |> # yes want this just for real sample
   pivot_wider(names_from = model, values_from = rating) |> 
   select(strategy, `deepseek/deepseek-chat-v3-0324`:`anthropic/claude-3.7-sonnet`) |> 
-  rename_with(~ str_remove(.x, "^.*/")) 
+  rename_with(~ stringr::str_remove(.x, "^.*/")) 
 
 strat_agreement <- agreement_analysis_by_group(d_strat_agree_wide, group_var = "strategy")
 

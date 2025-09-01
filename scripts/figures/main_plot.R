@@ -15,8 +15,8 @@ cond_names_short <- c(
 
 # --- Create Individual Plots ---
 # --- Plot A, change by condition ---
-a <- plot_predictions(
-  lm_robust(cents_to_amf_change ~ condition * cents_to_amf_pre, data = d),
+a <- marginaleffects::plot_predictions(
+  estimatr::lm_robust(cents_to_amf_change ~ condition * cents_to_amf_pre, data = d),
   by = c("condition"),
   newdata = "balanced", 
 ) +
@@ -40,8 +40,8 @@ a <- plot_predictions(
     )
 
 ## Plot B, change by pre (binned)
-nl_preds <- plot_predictions(
-  lm_robust(cents_to_amf_change ~ condition * cents_to_amf_pre_cat, data = d),
+nl_preds <- marginaleffects::plot_predictions(
+  estimatr::lm_robust(cents_to_amf_change ~ condition * cents_to_amf_pre_cat, data = d),
   by = c("cents_to_amf_pre_cat", "condition"),
   newdata = "balanced",
   draw = FALSE

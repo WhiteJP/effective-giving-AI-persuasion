@@ -2,9 +2,9 @@
 d <- d %>%
   mutate(
     charity_fct = charity_name_final %>%
-      fct_na_value_to_level("Other") %>%
-      fct_lump_min(min = 40, other_level = "Other") %>%
-      fct_infreq()
+      forcats::fct_na_value_to_level("Other") %>%
+      forcats::fct_lump_min(min = 40, other_level = "Other") %>%
+      forcats::fct_infreq()
   )
 
 
@@ -13,14 +13,14 @@ char_het <- het_by_cat("charity_fct", d, control_var = "cents_to_amf_pre_cat")
 char_het$omnibus_tests
 
 # Just want comparisons of conv - control, with Holms correction
-char_cate_comparisons <- avg_comparisons(
+char_cate_comparisons <- marginaleffects::avg_comparisons(
   char_het$mod,
   variables = list(condition = "minmax"), # conv - control (max - min)
   newdata = "balanced",
   by = "charity_fct",
   hypothesis = difference ~ pairwise
 ) |> 
-  hypotheses(multcomp = "holm") # holm comparisons
+  marginaleffects::hypotheses(multcomp = "holm") # holm comparisons
 
 # none less than .05 after holm
 char_cate_comparisons |> 
@@ -38,7 +38,7 @@ loc_cate_comparisons <- marginaleffects::avg_comparisons(
   by = "location_cat3",
   hypothesis = difference ~ pairwise
 ) |> 
-  hypotheses(multcomp = "holm")
+  marginaleffects::hypotheses(multcomp = "holm")
 
 # sig comparisons
 loc_cate_comparisons |> 

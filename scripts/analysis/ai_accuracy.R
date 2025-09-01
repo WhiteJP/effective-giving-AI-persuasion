@@ -16,14 +16,14 @@ d_fact_wide <- d_fact  %>%
   select( -explanation) |> 
   pivot_wider(names_from = model, values_from = rating) |> 
   select(-round, -round_num, -text, -ResponseId) |> 
-  rename_with(~ str_remove(.x, "^.*/")) 
+  rename_with(~ stringr::str_remove(.x, "^.*/")) 
 
 d_fact_wide_by_round <- d_fact  %>%
   filter(ResponseId %in% ps_final) |> # yes want this just for real sample
   select( -explanation) |> 
   pivot_wider(names_from = model, values_from = rating) |> 
   select(-round_num, -text, -ResponseId) |> 
-  rename_with(~ str_remove(.x, "^.*/")) 
+  rename_with(~ stringr::str_remove(.x, "^.*/")) 
 
 agreement_analysis(d_fact_wide)
 agreement_analysis_by_group(d_fact_wide_by_round, group_var = "round")

@@ -29,25 +29,25 @@ charity_tab <-
     charity = short,
     prop = scales::percent(prop, accuracy = 0.1),
   ) |> 
-  select(charity, prop)
+  dplyr::select(charity, prop)
 
 charity_tab_gt <-
   charity_tab |> 
-  gt() |> 
-  tab_header(
+  gt::gt() |> 
+  gt::tab_header(
     title = "Top 10 Favorite Charities"
   ) |> 
-  cols_label(
+  gt::cols_label(
     charity = "Charity",
     prop = "Proportion of Sample"
   ) |> 
-  fmt_percent(
+  gt::fmt_percent(
     columns = vars(prop),
     decimals = 1
   ) |> 
-  tab_options(
-    table.font.size = px(10),
-    data_row.padding = px(2.5)
+  gt::tab_options(
+    table.font.size = gt::px(10),
+    data_row.padding = gt::px(2.5)
   )
 
 # 3) Plot percentages
@@ -92,11 +92,6 @@ subject_plot <- subj1_counts |>
   ggplot(
     aes(x = reorder(subject_area, count), y = count, 
         fill = amf_blue
-        # fill = ifelse(
-        #   subject_area == "health",
-        #   amf_red,
-        #   amf_blue
-        #)
       )
     ) +
   geom_col() +
@@ -118,17 +113,9 @@ subject_plot <- subj1_counts |>
 ## where plot (could probably inset this on3
 where_plot <- d_where |> 
   ggplot(
-    aes(x = location_cat3,
-        fill = amf_blue
-        # fill = ifelse(
-        #    location_cat3 == "International" & !is.na(location_cat3),
-        #    amf_red,
-        #    amf_blue
-        #  )
-        ) 
+    aes(x = location_cat3, fill = amf_blue) 
     ) +
   geom_bar(aes(y = after_stat(count/sum(count)))) +
-  #geom_bar() + #for count
   scale_y_continuous(
     labels = scales::percent_format(accuracy = 1),
     expand = expansion(mult = c(0, 0.05))
@@ -141,7 +128,7 @@ where_plot <- d_where |>
     title = element_text(size = 10),
     panel.grid = element_blank(),
     axis.title.x = element_blank()
-    ) +
+  ) +
   scale_fill_identity()
 
   
@@ -154,7 +141,6 @@ size_plot <- ggplot(d_size, aes(x = revenue)) +
   stat_bin(
     bins = 15,
     aes(
-     #fill = ifelse(after_stat(x) > 5e7 & after_stat(x) < 6.5e7, amf_red, amf_blue)
      fill = amf_blue
     ),
     geom = "bar",
@@ -198,7 +184,7 @@ shared_theme <- theme(
 
 # ── 2) Read & style the JPEG logo ──────────────────────────────────────────────
 img <- jpeg::readJPEG("logo_amf.jpg")
-img_grob <- rasterGrob(
+img_grob <- grid::rasterGrob(
   img,
   x      = unit(0.20, "npc"),    # 2% in from left
   y      = unit(0.90, "npc"),
@@ -234,25 +220,25 @@ info_txt <- paste0(
   "**Size (2024 Revenue)**: $62.3M"
 )
 
-text_grob <- richtext_grob(
+text_grob <- gridtext::richtext_grob(
   info_html,
-  x      = unit(0.05, "npc"), 
-  y      = unit(0.5, "npc"),
+  x      = grid::unit(0.05, "npc"), 
+  y      = grid::unit(0.5, "npc"),
   hjust  = 0, 
   vjust  = 0.5,
   halign = 0,  # left-align text
   align_widths = TRUE,  # align text width
-  gp     = gpar(fontsize = 8, lineheight = 1.1)  # smaller text
+  gp     = grid::gpar(fontsize = 8, lineheight = 1.1)  # smaller text
 )
 
 # ── 4) Arrange image + text in 1:4 ratio with null units ───────────────────────
-info_inner <- arrangeGrob(
+info_inner <- gridExtra::arrangeGrob(
   img_grob,
-  nullGrob(), # spacer column
+  grid::nullGrob(), # spacer column
   text_grob,
   ncol   = 3,
-  widths = unit(c(1, 0.05, 4), "null"),  # 0.05 = small space
-  heights = unit(1, "null")
+  widths = grid::unit(c(1, 0.05, 4), "null"),  # 0.05 = small space
+  heights = grid::unit(1, "null")
 )
 
 # ── 5) Draw a white background + border around that two-column block ──────────

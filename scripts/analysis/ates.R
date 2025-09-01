@@ -83,8 +83,7 @@ d %>%
   )
 
 logreg <- glm(link_clicked ~ condition, data = d, family = binomial)
-
-logreg |> summary()
+summary(logreg)
 exp(logreg$coefficients)
 
 ## Moral Belief change

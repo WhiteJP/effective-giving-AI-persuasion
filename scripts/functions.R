@@ -195,7 +195,7 @@ het_by_bins_cond <- function(
     by = "profile_var",
     hypothesis = difference ~ pairwise
   ) |> 
-    hypotheses(multcomp = "holm")
+    marginaleffects::hypotheses(multcomp = "holm")
   
   # return a list of results
   list(
@@ -448,7 +448,7 @@ replace_terms_named <- function(vec, replacements) {
   sapply(vec, function(entry) {
     if (is.na(entry)) return(NA_character_)
     
-    parts <- str_split(entry, ";\\s*")[[1]]
+    parts <- stringr::str_split(entry, ";\\s*")[[1]]
     
     # Replace if in names of the replacement vector/list
     parts_new <- sapply(parts, function(part) {
@@ -469,7 +469,7 @@ replace_terms_named <- function(vec, replacements) {
 extract_unique_pcs_labels <- function(vec) {
   vec |>
     replace_na("Unknown or not classified") |>  # Treat NA as a label
-    str_split(";\\s*") |>
+    stringr::str_split(";\\s*") |>
     unlist() |>
     unique() |>
     sort()
@@ -572,21 +572,21 @@ format_ein <- function(eins) {
 
 ## Parse HTML hierarchy file into nested list structure
 parse_hierarchy <- function(html_file_path, leaves_as_vec = FALSE) {
-  html <- read_html(html_file_path)
+  html <-  rvest::read_html(html_file_path)
   
   # Recursive helper
   rec_parse_hierarchy <- function(node) {
-    lis <- html_elements(node, xpath = "./li")
+    lis <- rvest::html_elements(node, xpath = "./li")
     
     map(lis, function(li) {
-      span <- html_element(li, "span")
-      label <- html_text(span) |>
+      span <- rvest::html_element(li, "span")
+      label <- rvest::html_text(span) |>
         str_trim()
       
       # Skip empty labels
       if (is.na(label) || label == "") return(NULL)
       
-      children <- html_elements(li, "ul")
+      children <- rvest::html_elements(li, "ul")
       
       if (length(children) > 0) {
         set_names(list(rec_parse_hierarchy(children[[1]])), label)
@@ -604,7 +604,7 @@ parse_hierarchy <- function(html_file_path, leaves_as_vec = FALSE) {
       })()
   }
   
-  top_ul <- html_element(html, "#browser")
+  top_ul <- rvest::html_element(html, "#browser")
   rec_parse_hierarchy(top_ul)
 }
 
@@ -720,7 +720,7 @@ run_gam_simple <- function(
     paste(dv, "~ condition +", cov_term)
   )
   
-  gam_model <- gam(form, data = d, method = "REML")
+  gam_model <- mgcv::gam(form, data = d, method = "REML")
   
   gam_sum <- summary(gam_model)
   gam_gratia_plot <- gratia::draw(gam_model)
@@ -849,7 +849,7 @@ run_gam_simple <- function(
   
   # 4) Finally, if you want the marginal histogram, wrap in ggMarginal
   if (add_hist) {
-    p <- ggMarginal(
+    p <- ggExtra::ggMarginal(
       p,
       type    = "histogram",
       margins = "x",
@@ -875,7 +875,6 @@ run_gam_simple <- function(
 ## Get q-values for family of hypothesis tests
 ## Replaces p-values with q-values for specified terms
 get_qvals <- function(mod, terms_to_q_swap) {
-  requireNamespace('qvalue')
   nms <- terms_to_q_swap
   ps <- mod$p.value
   qs <- set_names(qvalue::qvalue(ps[nms])$qvalues, nms)

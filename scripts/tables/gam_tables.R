@@ -17,7 +17,7 @@ coef_map  = c(
 )
 
 ## ---------- 1) Parametric-only model table ----------
-param_tbl <- msummary(
+param_tbl <- modelsummary::msummary(
   mods,
   output   = "kableExtra",
   format   = "latex",
@@ -80,7 +80,7 @@ smooth_tbl <- purrr::imap_dfr(mods, ~{
 
 
 smooth_tbl_kbl <- smooth_tbl %>%
-  kbl(
+  kableExtra::kbl(
     format   = "latex",
     booktabs = TRUE,
     escape   = TRUE,  # we already escaped text; keep stars and symbols
@@ -88,6 +88,6 @@ smooth_tbl_kbl <- smooth_tbl %>%
     caption  = "\\label{tab:gam-smooths}Approximate significance of smooth terms",
     col.names = c("Smooth","Edf","Ref.df","F","p-value")
   ) |> 
-  kable_styling(latex_options = "hold_position") 
+  kableExtra::kable_styling(latex_options = "hold_position") 
 
 smooth_tbl_kbl

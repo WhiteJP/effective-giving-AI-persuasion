@@ -17,8 +17,8 @@ symbol_size <- 1.5
 df_plot <- char_het$comparisons |> 
   filter(contrast == "conv_treatment - control") |>
   mutate(
-    charity_fct = fct_reorder(charity_fct, estimate, \(x) median(abs(x))),
-    #charity_fct = fct_rev(charity_fct),
+    charity_fct = forcats::fct_reorder(charity_fct, estimate, \(x) median(abs(x))),
+    #charity_fct = forcats::fct_rev(charity_fct),
     contrast = factor(contrast, levels = unique(contrast))
   )
 
@@ -152,7 +152,7 @@ p1 <- ggplot(df_plot, aes(x = estimate, y = charity_fct, color = contrast)) +
 df_plot <- loc_het$comparisons %>%
   filter(contrast == "conv_treatment - control") %>%
   mutate(
-    location = fct_rev(location_cat3),
+    location = forcats::fct_rev(location_cat3),
     contrast = factor(contrast, levels = unique(contrast))
   )
 

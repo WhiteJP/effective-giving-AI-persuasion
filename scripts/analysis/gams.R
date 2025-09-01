@@ -15,5 +15,8 @@ important_covar_names <- c(
 # run gams for each
 gams <- lapply(
   important_covars, 
-  \(cov) run_gam_simple(d, cov, include_data = FALSE, add_hist = TRUE, x_label = important_covar_names[cov], include_legend = FALSE)
+  \(cov) run_gam_simple(
+    d, cov, include_data = FALSE, add_hist = TRUE, 
+    x_label = important_covar_names[cov], include_legend = FALSE
+  )
 )
