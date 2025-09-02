@@ -6,15 +6,18 @@ Here you can reproduce all figures, tables, and statistical analyses presented i
 
 ## Paper
 
-**White, J. P., Allen, C., Caviola, L., Costello, T., & Rand, D. G. (2025). Increasing the effectiveness of charitable giving using human-AI dialogues.** *PsyArXiv*. https://osf.io/preprints/psyarxiv/6cyn4_v1
+**White, J. P., Allen, C., Caviola, L., Costello, T., & Rand, D. G. (2025). Increasing the effectiveness of charitable giving using human-AI dialogues.** *PsyArXiv*. https://doi.org/10.31234/osf.io/6cyn4_v1
 
 ### BibTeX Citation
 ```bibtex
-@misc{white-etal_effective-giving-ai-persuasion,
+@misc{white-etal_effective-giving-ai-persuasion_2025,
  title={Increasing the effectiveness of charitable giving using human-AI dialogues},
  url={osf.io/preprints/psyarxiv/6cyn4_v1},
+ DOI={10.31234/osf.io/6cyn4_v1},
  publisher={PsyArXiv},
- author={White, Joshua P and Allen, Carter and Caviola, Lucius and Costello, Thomas and Rand, David G}
+ author={White, Joshua P and Allen, Carter and Caviola, Lucius and Costello, Thomas and Rand, David G},
+ year={2025},
+ month={Sep}
 }
 ```
 
